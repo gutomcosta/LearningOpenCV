@@ -26,7 +26,7 @@ public class GrabberShow implements Runnable{
 	//private final int INTERVAL = 1000; 
 	private IplImage image;
 	private CanvasFrame canvas = new CanvasFrame("Web Cam");
-	private CanvasFrame detect = new CanvasFrame("Detectings");
+	//private CanvasFrame detect = new CanvasFrame("Detectings");
 	
 	public GrabberShow(){
 		canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,26 +40,22 @@ public class GrabberShow implements Runnable{
 		try {
 			grabber.start();
 			IplImage img;
-			String fileName;
 			while(true){
 				img = grabber.grab();
 				if (img != null){
 					cvFlip(img, img, 1); // 1-r = 90 degrees steps anti clockwise
-					fileName = (i++)+"-aa.jpg";
-					cvSaveImage(fileName, img);
-					IplImage shot = cvLoadImage(fileName, CV_LOAD_IMAGE_COLOR);
-					IplImage detectedImg = detector.hsvThreshold(shot);
+					IplImage detectedImg = detector.hsvThreshold(img);
 					Dimension coordinates = detector.getCoordinates(detectedImg);
 					System.out.println("Coordinates: "+coordinates.width+" - "+coordinates.height);
 					if (coordinates.width > 0 ){
 						cvRectangle(img, 
-					    		cvPoint(coordinates.width - (coordinates.width / 2), coordinates.height),
-					    		cvPoint(coordinates.width, coordinates.height), 
+					    		cvPoint(coordinates.width, coordinates.height),
+					    		cvPoint(coordinates.width+30, coordinates.height+30), 
 					    	          opencv_core.CvScalar.YELLOW, 1, CV_AA, 0);
 					}
 
 					canvas.showImage(img);
-					detect.showImage(detectedImg);
+					//detect.showImage(detectedImg);
 					
 					
 				}
